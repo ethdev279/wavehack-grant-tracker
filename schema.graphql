@@ -1,0 +1,9 @@
+type Withdraw @entity(immutable: true) {
+  id: Bytes!
+  _secret: Bytes! # bytes32
+  addr: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
