@@ -23,4 +23,5 @@ dataSources:
       eventHandlers:
         - event: Withdraw(bytes32,address,uint256)
           handler: handleWithdraw
+          receipt: true
       file: ./src/contract.ts
