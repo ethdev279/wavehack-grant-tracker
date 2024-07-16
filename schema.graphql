@@ -1,25 +1,17 @@
-type Withdraw @entity(immutable: true) {
-  id: Bytes!
-  secret: Bytes! # bytes32
+type User @entity {
+  id: ID!
   address: Bytes! # address
-  amount: BigInt! # uint256
-  timestamp: BigInt! # uint256
+  transfersIn: [Transfer!]! @derivedFrom(field: "to")
+  transfersOut: [Transfer!]! @derivedFrom(field: "from")
+  createdAt: BigInt! # uint256
+  updatedAt: BigInt! # uint256
 }
-
-# type User @entity {
-#   id: Bytes!
-#   address: Bytes! # address
-#   transfersIn: [Transfer!]! @derivedFrom(field: "to")
-#   transfersOut: [Transfer!]! @derivedFrom(field: "from")
-#   createdAt: BigInt! # uint256
-#   updatedAt: BigInt! # uint256
-# }
 
 type Transfer @entity(immutable: true) {
   id: Bytes!
-  token: Bytes! # address
-  from: Bytes! 
-  to: Bytes!
+  token: String!
+  from: User! 
+  to: User!
   value: BigInt! # uint256
   txHash: Bytes! # bytes32
   timestamp: BigInt! # uint256
