@@ -47,7 +47,7 @@ export function handleWithdraw(event: WithdrawEvent): void {
       transfer.from = fromAddress.toHex();
       transfer.to = toAddress.toHex();
       transfer.value = transferAmount;
-      transfer.txHash = event.transaction.hash;
+      transfer.txHash = event.transaction.hash.toHex();
       transfer.timestamp = blockTimestamp;
       transfer.save();
     }

@@ -13,6 +13,6 @@ type Transfer @entity(immutable: true) {
   from: User! 
   to: User!
   value: BigInt! # uint256
-  txHash: Bytes! # bytes32
+  txHash: String!
   timestamp: BigInt! # uint256
 }

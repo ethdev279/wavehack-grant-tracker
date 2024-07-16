@@ -9,9 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.3.7",
+    "@ethersproject/constants": "^5.7.0",
+    "@ethersproject/units": "^5.7.0",
+    "antd": "^5.19.2",
+    "dayjs": "^1.11.11",
+    "graphql": "^16.9.0",
+    "graphql-request": "^7.1.0",
+    "next": "14.2.5",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.5"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "eslint": "^8",
