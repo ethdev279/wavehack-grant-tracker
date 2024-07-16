@@ -5,7 +5,16 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { formatUnits } from "@ethersproject/units";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Button, Input, message, Space, Table, Avatar, Breadcrumb } from "antd";
+import {
+  Button,
+  Input,
+  message,
+  Space,
+  Table,
+  Avatar,
+  Breadcrumb,
+  Tag
+} from "antd";
 import { SyncOutlined, ExportOutlined } from "@ant-design/icons";
 import { graphqlClient as client } from "@/app/utils";
 import { explorerUrl, supportedTokens } from "@/app/utils/constants";
@@ -73,6 +82,9 @@ const tokenTransferColumns = [
       };
       return (
         <>
+          <Tag color="green" bordered={false}>
+            IN
+          </Tag>
           <Avatar shape="circle" size="small" src={tokenData.icon} />
           <a
             href={`${explorerUrl}/token/${token}`}
