@@ -75,3 +75,38 @@ export const USERS_QUERY = gql`
     }
   }
 `;
+
+export const USER_QUERY = gql`
+  query user(
+    $id: ID!
+    $transfersIn_skip: Int
+    $transfersIn_first: Int
+    $transfersIn_orderBy: Transfer_orderBy
+    $transfersIn_orderDirection: OrderDirection
+    $transfersIn_where: Transfer_filter
+  ) {
+    user(id: $id) {
+      id
+      address
+      createdAt
+      transfersIn(
+        skip: $transfersIn_skip
+        first: $transfersIn_first
+        orderBy: $transfersIn_orderBy
+        orderDirection: $transfersIn_orderDirection
+        where: $transfersIn_where
+      ) {
+        id
+        value
+        token
+        txHash
+        timestamp
+        from {
+          id
+        }
+        to {
+          id
+        }
+      }
+    }
+  }`;
