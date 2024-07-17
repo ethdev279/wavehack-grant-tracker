@@ -29,25 +29,15 @@ const tokenTransferColumns = [
     ellipsis: true,
     width: "5%",
     render: ({ txHash }) => (
-      <Space>
-        {txHash.slice(0, 15) + "..." + txHash.slice(-5)}
-        <a
-          href={`${explorerUrl}/tx/${txHash}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <ExportOutlined
-            title="View on Explorer"
-            style={{ fontSize: "1rem" }}
-          />
-        </a>
-      </Space>
+      <a href={`${explorerUrl}/tx/${txHash}`} target="_blank" rel="noreferrer">
+        {txHash.slice(0, 10) + "..." + txHash.slice(-10)}
+      </a>
     )
   },
   {
     title: "Age",
     key: "timestamp",
-    width: "4%",
+    width: "3%",
     sorter: (a, b) => a.timestamp - b.timestamp,
     render: ({ timestamp }) => dayjs(timestamp * 1000).fromNow(true)
   },
@@ -119,7 +109,7 @@ export default function Address({ params: { id } }) {
       .request(USER_QUERY, {
         id,
         transfersIn_skip: 0,
-        transfersIn_first: 10,
+        transfersIn_first: 100,
         transfersIn_orderBy: "timestamp",
         transfersIn_orderDirection: "desc",
         transfersIn_where: {
@@ -182,9 +172,12 @@ export default function Address({ params: { id } }) {
             }
           }}
         />
-        <Button type="primary" onClick={getUserTokenTransfers}>
-          <SyncOutlined spin={dataLoading} />
-        </Button>
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<SyncOutlined spin={dataLoading} />}
+          onClick={getUserTokenTransfers}
+        />
       </Space>
       <Table
         className="table_grid"

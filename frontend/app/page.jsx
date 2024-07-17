@@ -20,25 +20,15 @@ const tokenTransferColumns = [
     ellipsis: true,
     width: "5%",
     render: ({ txHash }) => (
-      <Space>
-        {txHash.slice(0, 15) + "..." + txHash.slice(-5)}
-        <a
-          href={`${explorerUrl}/tx/${txHash}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <ExportOutlined
-            title="View on Explorer"
-            style={{ fontSize: "1rem" }}
-          />
-        </a>
-      </Space>
+      <a href={`${explorerUrl}/tx/${txHash}`} target="_blank" rel="noreferrer">
+        {txHash.slice(0, 10) + "..." + txHash.slice(-10)}
+      </a>
     )
   },
   {
     title: "Age",
     key: "timestamp",
-    width: "4%",
+    width: "3%",
     sorter: (a, b) => a.timestamp - b.timestamp,
     render: ({ timestamp }) => dayjs(timestamp * 1000).fromNow(true)
   },
@@ -48,9 +38,7 @@ const tokenTransferColumns = [
     ellipsis: true,
     width: "7%",
     sorter: (a, b) => a?.from?.id?.localeCompare(b?.from?.id),
-    render: ({ from }) => (
-      <Link href={`/address/${from.id}`}>{from.id}</Link>
-    )
+    render: ({ from }) => <Link href={`/address/${from.id}`}>{from.id}</Link>
   },
   {
     title: "To",
@@ -58,14 +46,12 @@ const tokenTransferColumns = [
     ellipsis: true,
     width: "7%",
     sorter: (a, b) => a?.to?.id?.localeCompare(b?.to?.id),
-    render: ({ to }) => (
-      <Link href={`/address/${to.id}`}>{to.id}</Link>
-    )
+    render: ({ to }) => <Link href={`/address/${to.id}`}>{to.id}</Link>
   },
   {
     title: "Amount",
     key: "value",
-    width: "5%",
+    width: "4%",
     sorter: (a, b) => a.value - b.value,
     render: ({ value, token }) => {
       const tokenData = supportedTokens.find(
@@ -84,7 +70,10 @@ const tokenTransferColumns = [
             rel="noreferrer"
             style={{ marginLeft: 10 }}
           >
-            {formatUnits(value, tokenData.decimals).replace(/(\.\d{3}).*/, "$1") +
+            {formatUnits(value, tokenData.decimals).replace(
+              /(\.\d{3}).*/,
+              "$1"
+            ) +
               " " +
               tokenData.symbol}
           </a>
@@ -138,7 +127,7 @@ export default function Home() {
 
   return (
     <div>
-      <h3 style={{ textAlign: "center" }}>Recent Transfers</h3>
+      <h3 style={{ textAlign: "center" }}>Recent Distributions</h3>
       <Space>
         <Input.Search
           placeholder="Search by address, token or transaction hash"
@@ -157,9 +146,12 @@ export default function Home() {
             }
           }}
         />
-        <Button type="primary" onClick={getTokenTransfers}>
-          <SyncOutlined spin={dataLoading} />
-        </Button>
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<SyncOutlined spin={dataLoading} />}
+          onClick={getTokenTransfers}
+        />
       </Space>
       <Table
         className="table_grid"
@@ -175,7 +167,7 @@ export default function Home() {
           defaultPageSize: 10,
           size: "small"
         }}
-        onChange={() => { }}
+        onChange={() => {}}
       />
     </div>
   );
