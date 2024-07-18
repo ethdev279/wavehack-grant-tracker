@@ -34,9 +34,14 @@ export function handleWithdraw(event: WithdrawEvent): void {
         transferAmount.toString()
       ]);
 
-      // Create or update from and to users
-      getOrInitUser(fromAddress, blockTimestamp);
-      getOrInitUser(toAddress, blockTimestamp);
+      // Create or update from and to users with total earnings
+      const fromUser = getOrInitUser(fromAddress, blockTimestamp);
+      fromUser.updatedAt = blockTimestamp;
+      fromUser.save();
+      const toUser = getOrInitUser(toAddress, blockTimestamp);
+      toUser.totalEarnings = toUser.totalEarnings.plus(transferAmount);
+      toUser.updatedAt = blockTimestamp;
+      toUser.save();
 
       const transfer = new Transfer(
         event.transaction.hash.concatI32(
@@ -60,9 +65,8 @@ function getOrInitUser(address: Bytes, initTimestamp: BigInt): User {
   if (user == null) {
     user = new User(address.toHex());
     user.address = address;
+    user.totalEarnings = BigInt.fromI32(0);
     user.createdAt = initTimestamp;
-    user.updatedAt = initTimestamp;
-    user.save();
   }
   return user;
 }

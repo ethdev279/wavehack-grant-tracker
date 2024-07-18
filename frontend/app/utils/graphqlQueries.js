@@ -52,7 +52,9 @@ export const USERS_QUERY = gql`
     ) {
       id
       address
+      totalEarnings
       createdAt
+      updatedAt
       transfersIn(
         skip: $transfersIn_skip
         first: $transfersIn_first
@@ -88,7 +90,9 @@ export const USER_QUERY = gql`
     user(id: $id) {
       id
       address
+      totalEarnings
       createdAt
+      updatedAt
       transfersIn(
         skip: $transfersIn_skip
         first: $transfersIn_first

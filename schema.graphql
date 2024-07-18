@@ -1,6 +1,7 @@
 type User @entity {
   id: ID!
   address: Bytes! # address
+  totalEarnings: BigInt! # uint256
   transfersIn: [Transfer!]! @derivedFrom(field: "to")
   transfersOut: [Transfer!]! @derivedFrom(field: "from")
   createdAt: BigInt! # uint256
