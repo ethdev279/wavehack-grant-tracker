@@ -177,6 +177,7 @@ export default function Address({ params: { id } }) {
         }
       >
         <Statistic
+          loading={dataLoading}
           value={formatUnits(user?.totalEarnings || 0, 6)}
           precision={2}
           valueStyle={{ color: "#3f8600" }}
