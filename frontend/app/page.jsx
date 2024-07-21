@@ -5,22 +5,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { formatUnits } from "@ethersproject/units";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {
-  Button,
-  Input,
-  message,
-  Space,
-  Table,
-  Avatar,
-  Breadcrumb,
-  Tag,
-  Statistic,
-  Card
-} from "antd";
+import { Button, Input, message, Space, Table, Avatar } from "antd";
 import { SyncOutlined, ExportOutlined } from "@ant-design/icons";
-import { graphqlClient as client } from "@/app/utils";
-import { explorerUrl, supportedTokens } from "@/app/utils/constants";
-import { USER_QUERY } from "@/app/utils/graphqlQueries";
+import { graphqlClient as client } from "./utils";
+import { explorerUrl, supportedTokens } from "./utils/constants";
+import { TOKEN_TRANSFERS_QUERY } from "./utils/graphqlQueries";
 
 dayjs.extend(relativeTime);
 
@@ -62,7 +51,7 @@ const tokenTransferColumns = [
   {
     title: "Amount",
     key: "value",
-    width: "5%",
+    width: "4%",
     sorter: (a, b) => a.value - b.value,
     render: ({ value, token }) => {
       const tokenData = supportedTokens.find(
@@ -74,9 +63,6 @@ const tokenTransferColumns = [
       };
       return (
         <>
-          <Tag color="green" bordered={false}>
-            IN
-          </Tag>
           <Avatar shape="circle" size="small" src={tokenData.icon} />
           <a
             href={`${explorerUrl}/token/${token}`}
@@ -97,24 +83,23 @@ const tokenTransferColumns = [
   }
 ];
 
-export default function Address({ params: { id } }) {
+export default function Home() {
   const [dataLoading, setDataLoading] = useState(false);
-  const [user, setUser] = useState({});
+  const [tokenTransfers, setTokenTransfers] = useState([]);
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q");
 
-  const getUser = async () => {
+  const getTokenTransfers = async () => {
     setDataLoading(true);
     client
-      .request(USER_QUERY, {
-        id,
-        transfersIn_skip: 0,
-        transfersIn_first: 100,
-        transfersIn_orderBy: "timestamp",
-        transfersIn_orderDirection: "desc",
-        transfersIn_where: {
+      .request(TOKEN_TRANSFERS_QUERY, {
+        skip: 0,
+        first: 100,
+        orderBy: "timestamp",
+        orderDirection: "desc",
+        where: {
           ...(searchQuery && {
             or: [
               { from_contains_nocase: searchQuery },
@@ -126,75 +111,34 @@ export default function Address({ params: { id } }) {
         }
       })
       .then((data) => {
-        setUser(data?.user);
+        setTokenTransfers(data.transfers);
         setDataLoading(false);
       })
       .catch((err) => {
-        message.error("Something went wrong. Please try again");
-        console.error("failed to get Address Info: ", err);
+        message.error("Something went wrong!");
+        console.error("failed to get transfers: ", err);
         setDataLoading(false);
       });
   };
 
   useEffect(() => {
-    getUser();
+    getTokenTransfers();
   }, []);
 
   return (
     <div>
-      <h3 style={{ textAlign: "center" }}>Address</h3>
-      <Breadcrumb
-        items={[
-          {
-            title: <Link href="/">Home</Link>
-          },
-          {
-            title: "Address"
-          },
-          {
-            title: <Link href={`/address/${id}`}>{id}</Link>
-          }
-        ]}
-      />
-      <Card
-        bordered
-        size="small"
-        style={{
-          textAlign: "center",
-          width: "100%",
-          maxWidth: 500,
-          margin: "0 auto"
-        }}
-        title="Total Received"
-        extra={
-          <a
-            href={`${explorerUrl}/address/${id}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <ExportOutlined />
-          </a>
-        }
-      >
-        <Statistic
-          loading={dataLoading}
-          value={formatUnits(user?.totalEarnings || 0, 6)}
-          precision={2}
-          valueStyle={{ color: "#3f8600" }}
-          prefix="$"
-        />
-      </Card>
+      <h3 style={{ textAlign: "center" }}>Recent Distributions</h3>
       <Space>
         <Input.Search
           placeholder="Search by address, token or transaction hash"
           value={searchQuery}
           enterButton
           allowClear
-          onSearch={getUser}
+          onSearch={getTokenTransfers}
           onChange={(e) => {
             const value = e.target.value;
             if (value === "") {
-              router.replace(`/address/${id}`);
+              router.replace("/");
             } else {
               router.replace(`?q=${encodeURIComponent(e.target.value)}`, {
                 scroll: false
@@ -206,14 +150,14 @@ export default function Address({ params: { id } }) {
           type="primary"
           shape="circle"
           icon={<SyncOutlined spin={dataLoading} />}
-          onClick={getUser}
+          onClick={getTokenTransfers}
         />
       </Space>
       <Table
         className="table_grid"
         columns={tokenTransferColumns}
         rowKey="id"
-        dataSource={user?.transfersIn || []}
+        dataSource={tokenTransfers}
         scroll={{ x: 970 }}
         loading={dataLoading}
         pagination={{

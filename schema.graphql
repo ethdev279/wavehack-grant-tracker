@@ -1,6 +1,7 @@
 type User @entity {
   id: ID!
   address: Bytes! # address
+  totalEarnings: BigInt! # uint256
   transfersIn: [Transfer!]! @derivedFrom(field: "to")
   transfersOut: [Transfer!]! @derivedFrom(field: "from")
   createdAt: BigInt! # uint256
@@ -13,6 +14,6 @@ type Transfer @entity(immutable: true) {
   from: User! 
   to: User!
   value: BigInt! # uint256
-  txHash: Bytes! # bytes32
+  txHash: String!
   timestamp: BigInt! # uint256
 }
