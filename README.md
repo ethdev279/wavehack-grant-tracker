@@ -33,7 +33,7 @@ graph deploy --node https://api.studio.thegraph.com/deploy/ <SUBGRAPH_SLUG>
 
 ### Frontend Setup
 
-> Note: Make sure to update the subgraph endpoint and chain config in `client/app/utils/constants.js`
+> Note: Make sure to update the subgraph endpoint and chain config in `frontend/app/utils/constants.js`
 
 ```bash
 cd frontend
